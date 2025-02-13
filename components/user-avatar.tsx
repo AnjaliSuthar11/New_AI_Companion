@@ -1,16 +1,15 @@
-"use client"
+"use client";
 
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@clerk/nextjs";
 
-
-export const UserAvatar=()=>{
-    const {user} = useUser();
-    return(
-        <div>
-         <Avatar className="h-12 w-12">
-            <AvatarImage src={user?.imageUrl}/>
-         </Avatar>
-        </div>
-    )
-}
+export const UserAvatar = () => {
+  const { user } = useUser();
+  return (
+    <div>
+      <Avatar className="h-8 w-8">
+        <AvatarImage src={user?.imageUrl} />
+      </Avatar>
+    </div>
+  );
+};

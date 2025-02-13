@@ -1,62 +1,52 @@
 import prismadb from "@/lib/prismadb";
-import { RedirectToSignIn } from "@clerk/nextjs";
+// import { RedirectToSignIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { ChatClient } from "./components/client";
 
+type ChatIdPageProps = {
+  params: Promise<{ chatId: string }>;
+};
 
+const ChatIdPage = async ({ params }: ChatIdPageProps) => {
+  const { userId } = await auth();
+  const { chatId } = await params;
 
-interface ChatIdPageProps{
-    params:{
-        chatId:string
-       
-    }
-}
+  if (!userId) {
+    return {
+      redirect: {
+        destination: "/sign-in",
+        permanent: false,
+      },
+    };
+  }
 
-const ChatIdPage = async ({params}:ChatIdPageProps) => {
-    const {userId} = await auth();
-    
-
-    if(!userId){
-        // return RedirectToSignIn(,"clerk");
-        return{
-        redirect:{
-            destination:"/signin",
-            permanent:false,
-
-        }
-    }
-    }
-
-    const companion = await prismadb.companion.findUnique({
-        where:{
-            id:params.chatId
+  const companion = await prismadb.companion.findUnique({
+    where: {
+      id: chatId,
+    },
+    include: {
+      messages: {
+        orderBy: {
+          createdAt: "asc",
         },
-        include:{
-            messages:{
-                orderBy:{
-                    createdAt:"asc"
-                },
-                where:{
-                    userId,
-                }
-            },
-            _count:{
-                select:{
-                    messages:true
-                }
-            }
-        
-        }
-    })
+        where: {
+          userId,
+        },
+      },
+      _count: {
+        select: {
+          messages: true,
+        },
+      },
+    },
+  });
 
-    if(!companion){
-        return redirect("/")
-    }
+  if (!companion) {
+    return redirect("/");
+  }
 
-  return (
-    <ChatClient companion={companion}/>
-  )
-}
+  return <ChatClient companion={companion} />;
+};
 
-export default ChatIdPage
+export default ChatIdPage;
