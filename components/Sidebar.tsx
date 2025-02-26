@@ -3,9 +3,16 @@ import React from "react";
 import { Home, Plus, Settings, createLucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { usePathname, useRouter } from "next/navigation";
-const Sidebar = () => {
+import { useProModal } from "@/hooks/use-pro-modal";
+
+interface SidebarPro{
+  isPro:boolean;
+}
+
+export const Sidebar = ({isPro}:SidebarPro) => {
   const pathname = usePathname();
   const router = useRouter();
+  const proModal = useProModal();
 
   const routes = [
     {
@@ -18,17 +25,20 @@ const Sidebar = () => {
       icon: Plus,
       href: "/dashboard/companion/new",
       label: "Create",
-      pro: false,
+      pro: true,
     },
     {
       icon: Settings,
-      href: "/settings",
+      href: "/dashboard/settings",
       label: "Settings",
       pro: false,
     },
   ];
 
   const onNavigate = (url: string, pro: boolean) => {
+    if(pro && !isPro){
+        return proModal.onOpen();
+    }
     return router.push(url);
   };
 

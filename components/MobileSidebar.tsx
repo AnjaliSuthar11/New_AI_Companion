@@ -18,7 +18,7 @@ const MobileSidebar = () => {
         <SheetHeader>
           <SheetTitle></SheetTitle>
         </SheetHeader>
-        <Sidebar />
+        <Sidebar isPro={true} />
       </SheetContent>
     </Sheet>
   );
