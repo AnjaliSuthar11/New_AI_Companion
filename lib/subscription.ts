@@ -10,6 +10,7 @@ export const checkSubscription=async()=>{
         return false;
     }
 
+
     const userSubscription= await prismadb.userSubscription.findUnique({
         where:{
             userId:userId,
@@ -26,7 +27,7 @@ export const checkSubscription=async()=>{
         return false
     }
 
-    const isValid=
+    const isValid =
     userSubscription.stripePriceId && 
     userSubscription.stripeCurrentPeriodEnd?.getTime()!+DAY_IN_MS>Date.now()
     return !!isValid;  // !! shows that its alwys in boolean

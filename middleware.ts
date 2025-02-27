@@ -3,7 +3,7 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const protectedRoutes = createRouteMatcher(["/api/webhook"]);
 
 export default clerkMiddleware(async (auth, req) => {
-  if (protectedRoutes(req)) await auth.protect();
+  if (!protectedRoutes(req)) await auth.protect();
 });
 
 export const config = {
