@@ -4,6 +4,7 @@ import { Categories } from "@/components/Categories";
 import { PrismaClient } from "@prisma/client";
 import { Companions } from "@/components/Companions";
 import { checkAuth } from "@/actions/auth";
+import { useEffect, useState } from "react";
 
 interface RootPageProps {
   searchParams: Promise<{
@@ -15,7 +16,6 @@ interface RootPageProps {
 const RootPage = async ({ searchParams }: RootPageProps) => {
   await checkAuth();
   const { categoryId, name } = await searchParams;
-
   const data = await prismadb.companion.findMany({
     where: {
       categoryId: categoryId,
@@ -34,7 +34,6 @@ const RootPage = async ({ searchParams }: RootPageProps) => {
       },
     },
   });
-
   const categories = await prismadb.category.findMany();
 
   return (

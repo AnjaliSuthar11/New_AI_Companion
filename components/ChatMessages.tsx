@@ -4,6 +4,8 @@ import { Companion } from "@prisma/client";
 import { ChatMessage, ChatMessageProps } from "./ChatMessage";
 import { useEffect, useState, useRef } from "react";
 
+
+
 interface ChatMessagesProps {
   messages: ChatMessageProps[];
   isLoading: boolean;
@@ -40,6 +42,7 @@ export const ChatMessages = ({
       <ChatMessage
         isLoading={fakeLoading}
         src={companion.src}
+        gender={companion.gender as "male" | "female"}
         role="system"
         content={`Hello, I am ${companion.name}, ${companion.description}`}
       />
@@ -50,9 +53,17 @@ export const ChatMessages = ({
           role={message.role}
           content={message.content}
           src={companion.src}
+          gender={companion.gender as "male" | "female"}
         />
       ))}
-      {isLoading && <ChatMessage role="system" src={companion.src} isLoading />}
+      {isLoading && (
+      <ChatMessage 
+          role="system" 
+          src={companion.src} 
+          isLoading 
+          gender={companion.gender as "male"|"female"}
+          content="Loading"
+      />)}
       <div ref={scrollRef} />
     </div>
   );

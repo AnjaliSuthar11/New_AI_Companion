@@ -11,7 +11,7 @@ const page = () => {
     if (!user) {
       return router.push("/dashboard");
     } else {
-      return router.push("/sign-in");
+      return router.push("/sign-in/[[...rest]]/page.tsx");
     }
   }, [user]);
 };

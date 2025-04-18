@@ -1,13 +1,11 @@
 import { StreamingTextResponse, LangChainStream } from "ai";
 import { CallbackManager } from "@langchain/core/callbacks/manager";
 import { NextRequest, NextResponse } from "next/server";
-import { ChatGroq } from "@langchain/groq"; // Import Groq from LangChain
-
+import { ChatGroq } from "@langchain/groq"; 
 import { MemoryManager } from "@/lib/memory";
 import { rateLimit } from "@/lib/rate-limit";
 import prismadb from "@/lib/prismadb";
 import { currentUser } from "@clerk/nextjs/server";
-import { Readable } from "stream";
 
 export async function POST(
   request: NextRequest,
@@ -81,7 +79,6 @@ export async function POST(
 
     // Use LangChainStream to handle streaming
     const { handlers, stream } = LangChainStream();
-
     // Initialize Groq model
     const model = new ChatGroq({
       apiKey: process.env.GROQ_API_KEY,
@@ -89,7 +86,6 @@ export async function POST(
       streaming: true,
       callbackManager: CallbackManager.fromHandlers(handlers),
     });
-
     // Call the model and let it stream the response
     const responsePromise = model.invoke(`
       You are ${name}, a friendly and helpful companion. Always respond in the FIRST PERSON (use "I" or "we") as if you are ${name}. 

@@ -1,5 +1,4 @@
 "use server";
-
 import { Groq } from "groq-sdk";
 
 const groq = new Groq({
@@ -12,7 +11,7 @@ export async function getInstructionFromAi(name: string, description: string) {
       messages: [
         {
           role: "assistant",
-          content: `You are ${name} who is a ${description}. provide me a response which will be in the form of instruction . provide the response in 200-300 characters. the response should use the terms like 'You are ...'. Provide the detailed information about ${name}. replace all 'I' with 'you'.`,
+          content: `You are ${name} who is a ${description}. provide me a response which will be in the form of instruction . provide the response in 800-1000 characters. the response should use the terms like 'You are ...'. Provide the detailed information about ${name}. replace all 'I' with 'you'.`,
         },
       ],
       model: "mixtral-8x7b-32768",

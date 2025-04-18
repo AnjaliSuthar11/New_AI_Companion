@@ -20,8 +20,12 @@ interface ChatClientProps {
 export const ChatClient = ({ companion }: ChatClientProps) => {
   const router = useRouter();
   const [messages, SetMessages] = useState<ChatMessageProps[]>(
-    companion.messages
+    companion.messages.map((msg) => ({
+      ...msg,
+      gender: companion.gender as "male" | "female",
+    }))
   );
+  
 
   const { input, isLoading, handleSubmit, handleInputChange, setInput } =
     useCompletion({
@@ -30,6 +34,7 @@ export const ChatClient = ({ companion }: ChatClientProps) => {
         const systemMessage: ChatMessageProps = {
           role: "system",
           content: completion,
+          gender:companion.gender as "male" | "female" 
         };
         SetMessages((current) => [...current, systemMessage]);
         setInput("");
@@ -42,6 +47,7 @@ export const ChatClient = ({ companion }: ChatClientProps) => {
     const userMessage: ChatMessageProps = {
       role: "user",
       content: input,
+      gender:companion.gender as "male" | "female"
     };
     SetMessages((current) => [...current, userMessage]);
 

@@ -8,7 +8,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Sidebar from "@/components/Sidebar";
-const MobileSidebar = () => {
+const MobileSidebar = ({isPro}:{isPro:boolean}) => {
   return (
     <Sheet>
       <SheetTrigger className="md:hidden pr-4">
@@ -18,7 +18,7 @@ const MobileSidebar = () => {
         <SheetHeader>
           <SheetTitle></SheetTitle>
         </SheetHeader>
-        <Sidebar isPro={true} />
+        <Sidebar isPro={isPro} />
       </SheetContent>
     </Sheet>
   );

@@ -1,5 +1,5 @@
 "use client"
-import { Search } from "lucide-react"
+import { OctagonAlert, Search } from "lucide-react"
 import {ChangeEventHandler, useEffect, useState}from "react"
 import React from 'react'
 import { Input } from "@/components/ui/input"
@@ -19,9 +19,9 @@ const Search_input = () => {
     const[ value,setValue]=useState(name || "");  
     const debouncedValue  =  use_debounce<string>(value,500);     
     const onchange: ChangeEventHandler<HTMLInputElement>=(e)=>{
-        setValue(e.target.value);  
+        setValue(e.target.value); 
      }      
-     
+    
      useEffect(()=>{
         const query ={
             name:debouncedValue,

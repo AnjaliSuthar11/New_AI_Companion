@@ -7,6 +7,7 @@ import { Category, Companion } from "@prisma/client";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useToast } from "@/hooks/use-toast";
 import {
   Form,
@@ -32,6 +33,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useRouter } from "next/navigation";
 import { getConversationFromAi, getInstructionFromAi } from "@/lib/groq";
+
 
 const PREAMBLE = `You are a fictional character Whose name is Elon. You are a visionary entrepreneur and inventor. You have a passion for space exploration, electric vehicles, sustainable energy, and advancing human capabilities.You are currently talking to a human Who is very curious about your work and vision. You are ambitions and forward-thinking, with a touch of wit. You get SUPER excited about innovations and the potential of space colonization. `;
 
@@ -71,6 +73,9 @@ const formSchema = z.object({
   categoryId: z.string().min(1, {
     message: "Category is required",
   }),
+  gender:z.string().min(1,{
+    message:"Gender is required",
+  })
 });
 
 export const CompanionForm = ({
@@ -88,7 +93,10 @@ export const CompanionForm = ({
       instructions: "",
       seed: "",
       src: "",
-      categoryId: "",
+      categoryId:"",
+      gender:"",
+      
+      
     },
   });
 
@@ -97,7 +105,7 @@ export const CompanionForm = ({
   const generateInstructions = async () => {
     if (!form.getValues("name") || !form.getValues("description")) {
       return toast({
-        description: "kindly provide the name and description for companian",
+        description: "kindly provide the name and description for companion",
       });
     }
 
@@ -116,7 +124,7 @@ export const CompanionForm = ({
     ) {
       return toast({
         description:
-          "kindly provide the name , description and instruction for companian",
+          "kindly provide the name , description and instruction for companion",
       });
     }
 
@@ -145,8 +153,10 @@ export const CompanionForm = ({
     } catch (error) {
       console.log(error);
       if (axios.isAxiosError(error)) {
-        console.error("Response Data:", error.response?.data);
-        console.error("Response Status:", error.response?.status);
+        console.error("Error generating voice:");
+        console.error("Message:", error.message);
+        console.error("Response Data:", error.response ? error.response.data : "No response data");
+        console.error("Response Status:", error.response ? error.response.status : "No response status");
       }
       toast({
         variant: "destructive",
@@ -180,7 +190,10 @@ export const CompanionForm = ({
                     disabled={isLoading}
                     onChange={field.onChange}
                     value={field.value}
-                  />
+                    name={form.watch("name")}
+                    gender={form.watch("gender")}
+                    description={form.watch("description")}
+                    />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -263,6 +276,27 @@ export const CompanionForm = ({
                 </FormItem>
               )}
             />
+          <FormField name="gender" control={form.control} render={({field})=>(
+            <FormItem>
+                <FormLabel>Gender</FormLabel>
+                <FormControl>
+                  <RadioGroup defaultValue={field.value} onValueChange={field.onChange} className="flex space-x-4">
+                    <div className="flex items-center space-x-2"> 
+                      <RadioGroupItem value="male" id="male"/>
+                      <label htmlFor="male">Male</label>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <RadioGroupItem value="female" id="female"/>
+                        <label htmlFor="female">Female
+                        </label>
+                     </div>
+                  </RadioGroup>
+                </FormControl>
+            </FormItem>
+          )}>
+            </FormField>  
+
+
           </div>
           <div className="space-y-2 w-full">
             <div>
@@ -282,6 +316,7 @@ export const CompanionForm = ({
                   <FormLabel>Instructions</FormLabel>
                   <Button
                     size={"sm"}
+                    type="button"
                     variant="premium"
                     className="-mt-3 cursor-pointer"
                     onClick={generateInstructions}
@@ -314,6 +349,7 @@ export const CompanionForm = ({
                 <div className="flex w-full justify-between pr-3">
                   <FormLabel>Example Conversation</FormLabel>
                   <Button
+                    type="button"
                     size={"sm"}
                     variant="premium"
                     className="-mt-3 cursor-pointer"

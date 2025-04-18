@@ -9,7 +9,7 @@ export async function PATCH(req:Request,
     try{
         const body = await req.json();
         const user = await currentUser();
-        const {src,name,description,instructions,seed,categoryId} = body;
+        const {src,name,description,instructions,seed,categoryId,gender} = body;
 
         if(!params.companionId){
             return new NextResponse("Missing required fields",{status:400})
@@ -20,7 +20,7 @@ export async function PATCH(req:Request,
 
         }
 
-        if(!src || !name || !description || !instructions || !seed || !categoryId ){
+        if(!src || !name || !description || !instructions || !seed || !categoryId || !gender ){
             return new NextResponse("Missing required fields",{status:400});
         }
 
@@ -46,7 +46,8 @@ export async function PATCH(req:Request,
                 name,
                 description,
                 instructions,
-                seed
+                seed,
+                gender
 
             }
         });

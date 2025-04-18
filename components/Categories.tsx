@@ -15,14 +15,24 @@ export const Categories =({
     const searchParams = useSearchParams();
     const categoryId =searchParams.get("categoryId");
 
-    const onClick =(id:string | undefined)=>{
-        const query={categoryId:id};
-        const url =qs.stringifyUrl({
-            url:window.location.href,
-            query,},{skipNull:true});
+    // const onClick =(id:string | undefined)=>{
+    //     const query={categoryId:id};
+    //     const url =qs.stringifyUrl({
+    //         url:window.location.href,
+    //         query,},{skipNull:true});
 
-            router.push(url);
-    }
+    //         router.push(url);
+    // }
+
+    const onClick = (id: string | undefined) => {
+        const currentUrl = window.location.origin + window.location.pathname; // Base URL without query params
+    
+        const query = id ? { categoryId: id } : {}; // Add or clear categoryId
+        const url = qs.stringifyUrl({ url: currentUrl, query }, { skipNull: true, skipEmptyString: true });
+    
+        router.push(url);
+    };
+    
 
     return(
         <div className="w-full overflow-x-auto space-x-2 flex p-1">

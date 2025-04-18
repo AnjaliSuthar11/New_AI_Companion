@@ -1,5 +1,6 @@
 "use client";
 
+import axios from "axios";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
 import { useTheme } from "next-themes";
@@ -12,9 +13,11 @@ import { useCallback, useState } from "react";
 
 export interface ChatMessageProps {
   role: "system" | "user";
-  content?: string;
+  content: string;
   isLoading?: boolean;
   src?: string;
+  gender:"male" | "female";
+  
 }
 
 export const ChatMessage = ({
@@ -22,12 +25,14 @@ export const ChatMessage = ({
   content,
   isLoading,
   src,
+  gender,
 }: ChatMessageProps) => {
   const { toast } = useToast();
   const { theme } = useTheme();
   const [isSpeaking, setIsSpeaking] = useState(false);
-  const [utterance, setUtterance] = useState<any>(null);
+  const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(null);
 
+ 
   const onCopy = () => {
     if (!content) {
       return;
@@ -40,21 +45,133 @@ export const ChatMessage = ({
   };
 
 
-  const handleSpeak = (text:string) => {
-    if (isSpeaking) {
-      if (utterance) {
-        window.speechSynthesis.cancel();
-        setIsSpeaking(false);
-      }
-    } else {
-      const newUtterance = new SpeechSynthesisUtterance(text);
-      newUtterance.onend = () => setIsSpeaking(false);
-      setUtterance(newUtterance);
-      window.speechSynthesis.speak(newUtterance);
+  // const handleSpeak = (text:string) => {
+  //   if (isSpeaking) {
+  //     if (utterance) {
+  //       window.speechSynthesis.cancel();
+  //       setIsSpeaking(false);
+  //     }
+  //   } else {
+  //     const newUtterance = new SpeechSynthesisUtterance(text);
+  //     newUtterance.onend = () => setIsSpeaking(false);
+  //     setUtterance(newUtterance);
+  //     window.speechSynthesis.speak(newUtterance);
+  //     setIsSpeaking(true);
+  //   }
+  // };
+  
+  // for eleven labs
+  // const handleSpeak = async () => {
+  //   if (!content) return;
+
+  //   try {
+  //     const response = await axios.post("/api/text-to-speech", {
+  //       text: content,
+  //       gender:gender,
+  //     },{responseType:"arraybuffer"});
+
+  //     const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
+  //     const audioUrl = URL.createObjectURL(audioBlob);
+
+  //     const audio = new Audio(audioUrl);
+  //     console.log("Audio URL:", audioUrl);
+  //     console.log("Supported formats:", audio.canPlayType("audio/mpeg"));
+
+  //     setIsSpeaking(true);
+  //     audio.play();
+  //     audio.onended = () => setIsSpeaking(false);
+
+  //   } catch (error) {
+  //     console.error("Failed to generate voice:", error);
+  //     toast({ 
+  //       variant: "destructive", 
+  //       description: "Failed to generate voice." });
+  //   }
+  // };
+
+  const handlePlayVoice = async () => {
+    if (!content || !gender) {
+      toast({ 
+        variant: "destructive", 
+        description: "Content or gender missing." 
+      });
+      return;
+    }
+  
+    try {
       setIsSpeaking(true);
+      const response = await axios.post("/api/text-to-speech", {
+        text: content,
+        gender,
+      });
+  
+      const { audioUrl } = response.data;
+  
+      if (audioUrl) {
+        const audio = new Audio(audioUrl);
+        audio.play();
+        audio.onended = () => setIsSpeaking(false);
+      } else {
+        throw new Error("No audio URL received");
+      }
+    } catch (error) {
+      console.error("Failed to generate voice:", error);
+      toast({ 
+        variant: "destructive", 
+        description: "Failed to generate AI voice." 
+      });
+    } finally {
+      setIsSpeaking(false);
     }
   };
+  
 
+  // if (isSpeaking) {
+    //     if (utterance) {
+    //       window.speechSynthesis.cancel();
+    //       setIsSpeaking(false);
+    //     }
+    //   } else {
+    //     const newUtterance = new SpeechSynthesisUtterance(text);
+    //     newUtterance.onend = () => setIsSpeaking(false);
+    //     setUtterance(newUtterance);
+    //     window.speechSynthesis.speak(newUtterance);
+    //     setIsSpeaking(true);
+    //   }
+
+    const speakText = (text: string, gender: "male" | "female") => {
+      if (isSpeaking) {
+        if (utterance) {
+          window.speechSynthesis.cancel();
+          setIsSpeaking(false);
+        }
+      } else {
+        const newUtterance = new SpeechSynthesisUtterance(text);
+    
+        const voices = window.speechSynthesis.getVoices();
+
+        const maleVoices = voices.filter((voice) =>
+          ["Microsoft David", "Microsoft Ravi", "Microsoft Mark", "Google UK English Male"].some((name) =>
+            voice.name.includes(name)
+          )
+        );
+    
+        const femaleVoices = voices.filter((voice) =>
+          ["Microsoft Heera", "Microsoft Zira", "Google UK English Female"].some((name) =>
+            voice.name.includes(name)
+          )
+        );
+    
+        newUtterance.voice = gender === "female" ? femaleVoices[1] : maleVoices[2];
+    
+        newUtterance.onend = () => setIsSpeaking(false);
+        setUtterance(newUtterance);
+    
+        window.speechSynthesis.speak(newUtterance);
+        setIsSpeaking(true);
+      }
+    };
+  
   return (
     <div
       className={cn(
@@ -73,7 +190,7 @@ export const ChatMessage = ({
           {
             role === "system" && (
               <div className="flex items-end justify-end">
-              <Button variant={"ghost"} className="m-0 p-0 hover:bg-transparent" onClick={()=> handleSpeak(content!) }>
+              <Button variant={"ghost"} className="m-0 p-0 hover:bg-transparent" onClick={()=>speakText(content,gender)}>
                 {
                   !isSpeaking ? <Volume2 /> : <VolumeOff />
                 }

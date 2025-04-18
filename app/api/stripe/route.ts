@@ -4,7 +4,7 @@ import prismadb from "@/lib/prismadb";
 import { absoluteUrl } from "@/lib/utils";
 import { auth, currentUser } from "@clerk/nextjs/server";
 
-const settingsUrl = absoluteUrl("/dashboard/settings"); //basiclaly after  payment redirect to website  which page
+const settingsUrl = absoluteUrl("/dashboard/settings"); //basically after  payment redirect to website  which page
 
 export async function GET(request: Request) {
   try {

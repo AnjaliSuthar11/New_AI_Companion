@@ -17,7 +17,7 @@ const Page = async ({ params }: CompanionIdPageProps) => {
   if (!userId) {
     return {
       redirect: {
-        destination: "/sign-in",
+        destination: "/sign-in/[[...rest]]/page.tsx",
         permanent: false,
       },
     };
