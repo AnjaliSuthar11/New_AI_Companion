@@ -15,7 +15,7 @@ const ChatIdPage = async ({ params }: ChatIdPageProps) => {
   if (!userId) {
     return {
       redirect: {
-        destination: "/sign-in/[[...rest]]/page.tsx",
+        destination: "/sign-in",
         permanent: false,
       },
     };

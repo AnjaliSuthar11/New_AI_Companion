@@ -14,7 +14,7 @@ export async function getInstructionFromAi(name: string, description: string) {
           content: `You are ${name} who is a ${description}. provide me a response which will be in the form of instruction . provide the response in 800-1000 characters. the response should use the terms like 'You are ...'. Provide the detailed information about ${name}. replace all 'I' with 'you'.`,
         },
       ],
-      model: "mixtral-8x7b-32768",
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
     });
 
     return response.choices[0].message.content;
@@ -51,7 +51,7 @@ export async function getConversationFromAi(
           ${name}: (Responds again, adding depth and personality). provide atleast 3 conversation data. also try to include expressions.`,
         },
       ],
-      model: "mixtral-8x7b-32768",
+      model: "meta-llama/llama-4-scout-17b-16e-instruct",
     });
 
     return response.choices[0].message.content;

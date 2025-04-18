@@ -8,11 +8,13 @@ import prismadb from "@/lib/prismadb";
 import { currentUser } from "@clerk/nextjs/server";
 
 export async function POST(
-  request: NextRequest,
-  { params }: { params: { chatId: string } }
-) {
+  request: NextRequest) {
   try {
-    const { prompt } = await request.json();
+    const url=new URL(request.url);
+    const pathSegments=url.pathname.split("/");
+    const chatId=pathSegments[pathSegments.length-1];
+    const {prompt} = await request.json();
+    
 
     if (!prompt) {
       return new NextResponse("Prompt is required", { status: 400 });
@@ -30,7 +32,7 @@ export async function POST(
     }
 
     const companion = await prismadb.companion.update({
-      where: { id: params.chatId },
+      where: { id: chatId },
       data: {
         messages: {
           create: {
@@ -79,13 +81,15 @@ export async function POST(
 
     // Use LangChainStream to handle streaming
     const { handlers, stream } = LangChainStream();
+
     // Initialize Groq model
-    const model = new ChatGroq({
+     const model = new ChatGroq({
       apiKey: process.env.GROQ_API_KEY,
-      modelName: "mixtral-8x7b-32768",
+      modelName: "meta-llama/llama-4-scout-17b-16e-instruct",
       streaming: true,
       callbackManager: CallbackManager.fromHandlers(handlers),
     });
+
     // Call the model and let it stream the response
     const responsePromise = model.invoke(`
       You are ${name}, a friendly and helpful companion. Always respond in the FIRST PERSON (use "I" or "we") as if you are ${name}. 
@@ -110,7 +114,7 @@ export async function POST(
 
     await prismadb.companion.update({
       where: {
-        id: params.chatId,
+        id: chatId,
       },
       data: {
         messages: {
