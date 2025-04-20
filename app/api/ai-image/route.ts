@@ -18,15 +18,19 @@ export async function POST(req: Request) {
       return NextResponse.json("Name, gender, and description are required.", { status: 400 });
     }
 
-    const prompt = `image of a character named ${name} and it's size should be 512 x 512`;
+    const prompt = `image of a character named ${name} and who is ${description} it's size should be 512 x 512`;
     // Ultra-realistic portrait of a ${gender} character named ${name}, with ${description}. Studio lighting, 4K, intricate details, highly detailed face, soft shadows, cinematic style.size should be 512 x 512
 
     const image = await hf.textToImage({
-      model: "stabilityai/stable-diffusion-2",
+      model: "stabilityai/stable-diffusion-3.5-large",
       inputs: prompt,
       parameters: { num_inference_steps: 50, seed: Math.floor(Math.random() * 100000) },
     });
-
+    if (!image) {
+      console.error("No image received from Hugging Face");
+      return NextResponse.json("Failed to generate image", { status: 500 });
+    }
+    
     const buffer = await image.arrayBuffer();
     const base64String = arrayBufferToBase64(buffer);
 

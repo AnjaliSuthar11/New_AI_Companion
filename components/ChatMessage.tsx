@@ -139,6 +139,39 @@ export const ChatMessage = ({
     //     setIsSpeaking(true);
     //   }
 
+    // const speakText = (text: string, gender: "male" | "female") => {
+    //   if (isSpeaking) {
+    //     if (utterance) {
+    //       window.speechSynthesis.cancel();
+    //       setIsSpeaking(false);
+    //     }
+    //   } else {
+    //     const newUtterance = new SpeechSynthesisUtterance(text);
+    
+    //     const voices = window.speechSynthesis.getVoices();
+
+    //     const maleVoices = voices.filter((voice) =>
+    //       ["Microsoft David", "Microsoft Ravi", "Microsoft Mark", "Google UK English Male"].some((name) =>
+    //         voice.name.includes(name)
+    //       )
+    //     );
+    
+    //     const femaleVoices = voices.filter((voice) =>
+    //       ["Microsoft Heera", "Microsoft Zira", "Google UK English Female"].some((name) =>
+    //         voice.name.includes(name)
+    //       )
+    //     );
+    
+    //     newUtterance.voice = gender === "female" ? femaleVoices[1] : maleVoices[2];
+    
+    //     newUtterance.onend = () => setIsSpeaking(false);
+    //     setUtterance(newUtterance);
+    
+    //     window.speechSynthesis.speak(newUtterance);
+    //     setIsSpeaking(true);
+    //   }
+    // };
+
     const speakText = (text: string, gender: "male" | "female") => {
       if (isSpeaking) {
         if (utterance) {
@@ -149,21 +182,24 @@ export const ChatMessage = ({
         const newUtterance = new SpeechSynthesisUtterance(text);
     
         const voices = window.speechSynthesis.getVoices();
-
-        const maleVoices = voices.filter((voice) =>
-          ["Microsoft David", "Microsoft Ravi", "Microsoft Mark", "Google UK English Male"].some((name) =>
-            voice.name.includes(name)
-          )
-        );
     
-        const femaleVoices = voices.filter((voice) =>
-          ["Microsoft Heera", "Microsoft Zira", "Google UK English Female"].some((name) =>
-            voice.name.includes(name)
-          )
-        );
+        // 🧠 Detect language from the message (basic check for Hindi vs English)
+        const isHindi = /[\u0900-\u097F]/.test(text); // Unicode range for Devanagari
     
-        newUtterance.voice = gender === "female" ? femaleVoices[1] : maleVoices[2];
+        // ✅ Filter voice list by language and gender
+        const filteredVoices = voices.filter((voice) => {
+          const matchLang = isHindi ? voice.lang.includes("hi") : voice.lang.includes("en");
+          const matchGender = gender === "male"
+            ? voice.name.toLowerCase().includes("male") || voice.name.toLowerCase().includes("ravi") || voice.name.toLowerCase().includes("vikas") || voice.name.toLowerCase().includes("kartik") || voice.name.toLowerCase().includes("hassan") || voice.name.toLowerCase().includes("mark")
+            : voice.name.toLowerCase().includes("female") || voice.name.toLowerCase().includes("zira") || voice.name.toLowerCase().includes("heera");
+          return matchLang && matchGender;
+        });
     
+        // 🗣️ Fallback voice selection if no filtered voice found
+        const selectedVoice = filteredVoices[0] || voices.find(v => v.lang.includes(isHindi ? "hi" : "en")) || voices[0];
+    
+        newUtterance.voice = selectedVoice;
+        newUtterance.lang = isHindi ? "hi-IN" : "en-US"; // Set language
         newUtterance.onend = () => setIsSpeaking(false);
         setUtterance(newUtterance);
     
@@ -171,7 +207,7 @@ export const ChatMessage = ({
         setIsSpeaking(true);
       }
     };
-  
+    
   return (
     <div
       className={cn(

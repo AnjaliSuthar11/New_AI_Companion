@@ -48,7 +48,7 @@ export async function getConversationFromAi(
           Human: (Asks a question)
           ${name}: (Responds in a conversational manner, staying in character)
           Human: (Follows up, showing curiosity)
-          ${name}: (Responds again, adding depth and personality). provide atleast 3 conversation data. also try to include expressions.`,
+          ${name}: (Responds again, adding depth and personality). provide at least 3 conversation data. also try to include expressions.`,
         },
       ],
       model: "meta-llama/llama-4-scout-17b-16e-instruct",

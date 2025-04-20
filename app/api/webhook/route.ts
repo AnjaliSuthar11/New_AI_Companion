@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { headers } from "next/headers";
 import Stripe from "stripe";
 import { stripe } from "@/lib/stripe";
 import prismadb from "@/lib/prismadb";
@@ -78,5 +77,4 @@ export async function POST(req: Request) {
 
   return new NextResponse(null, { status: 200 });
 }
-
 
