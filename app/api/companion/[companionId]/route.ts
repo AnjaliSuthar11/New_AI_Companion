@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import {auth, currentUser } from "@clerk/nextjs/server";
 import { checkSubscription } from "@/lib/subscription";
 import prismadb from "@/lib/prismadb";
+import { NextRequest } from "next/server";
+
+export const runtime = "nodejs";
 
 export async function PATCH(req:Request,
     {params}:{params:{companionId:string}}
@@ -64,7 +67,7 @@ export async function PATCH(req:Request,
 }
 
 export async function DELETE(
-    req:Request,
+    req:NextRequest,
     {params}:{params:{companionId:string}}
 ){
     try{
