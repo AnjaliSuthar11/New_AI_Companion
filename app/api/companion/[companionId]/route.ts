@@ -64,7 +64,7 @@ export async function PATCH(req:Request,
 }
 
 export async function DELETE(
-    Request:Request,
+    req:Request,
     {params}:{params:{companionId:string}}
 ){
     try{
