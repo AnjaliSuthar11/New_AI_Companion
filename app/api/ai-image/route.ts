@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     // Ultra-realistic portrait of a ${gender} character named ${name}, with ${description}. Studio lighting, 4K, intricate details, highly detailed face, soft shadows, cinematic style.size should be 512 x 512
 
     const image = await hf.textToImage({
-      model: "runwayml/stable-diffusion-v1-5",
+      model: "stable-diffusion-v1-5/stable-diffusion-v1-5",
       inputs: prompt,
       parameters: {
         num_inference_steps: 50,
