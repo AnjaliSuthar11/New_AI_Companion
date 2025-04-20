@@ -6,15 +6,18 @@ import { NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 
-export async function PATCH(req:Request,
-    {params}:{params:{companionId:string}}
-) {
+export async function PATCH(request: NextRequest)
+ {
     try{
-        const body = await req.json();
+        const url=new URL(request.url);
+        const pathSegments=url.pathname.split("/");
+        const companionId=pathSegments[pathSegments.length-1];
+
+        const body = await request.json();
         const user = await currentUser();
         const {src,name,description,instructions,seed,categoryId,gender} = body;
 
-        if(!params.companionId){
+        if(!companionId){
             return new NextResponse("Missing required fields",{status:400})
         }
 
@@ -37,7 +40,7 @@ export async function PATCH(req:Request,
 
         const companion = await prismadb.companion.update({
             where:{
-                id:params.companionId,
+                id:companionId,
                 userId:user.id,
 
             },
@@ -67,9 +70,11 @@ export async function PATCH(req:Request,
 }
 
 export async function DELETE(
-    req:NextRequest,
-    {params}:{params:{companionId:string}}
-){
+    request: NextRequest)
+{
+    const url=new URL(request.url);
+    const pathSegments=url.pathname.split("/");
+    const companionId=pathSegments[pathSegments.length-1];
     try{
         const { userId } = await auth();
 
@@ -80,7 +85,7 @@ export async function DELETE(
         const companion = await prismadb.companion.delete({
             where:{
                 userId,
-                id:params.companionId,
+                id:companionId,
 
             }
         })
