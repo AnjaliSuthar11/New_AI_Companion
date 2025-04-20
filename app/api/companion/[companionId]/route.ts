@@ -6,13 +6,14 @@ import { NextRequest } from "next/server";
 
 export const runtime = "nodejs";
 
-export async function PATCH(request: NextRequest)
+export async function PATCH(request: NextRequest,context:{params:{companionId:string}})
  {
     try{
-        const url=new URL(request.url);
-        const pathSegments=url.pathname.split("/");
-        const companionId=pathSegments[pathSegments.length-1];
 
+        // const url=new URL(request.url);
+        // const pathSegments=url.pathname.split("/");
+        // const companionId=pathSegments[pathSegments.length-1];
+        const {companionId}= context.params;
         const body = await request.json();
         const user = await currentUser();
         const {src,name,description,instructions,seed,categoryId,gender} = body;
@@ -59,9 +60,6 @@ export async function PATCH(request: NextRequest)
         });
         return NextResponse.json(companion);
 
-
-
-
     }catch(error){
         console.log("[COMPANION_PATCH]",error);
         return new NextResponse("Internal Error",{status:500});
@@ -70,13 +68,14 @@ export async function PATCH(request: NextRequest)
 }
 
 export async function DELETE(
-    request: NextRequest)
+    request: NextRequest,context:{params:{companionId:string}})
 {
     
     try{
-        const url=new URL(request.url);
-        const pathSegments=url.pathname.split("/");
-        const companionId=pathSegments[pathSegments.length-1];
+        // const url=new URL(request.url);
+        // const pathSegments=url.pathname.split("/");
+        // const companionId=pathSegments[pathSegments.length-1];
+        const {companionId} = context.params
         const { userId } = await auth();
 
         if(!userId){
