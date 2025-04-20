@@ -1,7 +1,7 @@
 import { SubscriptionButton } from "@/components/subscription-button";
 import { checkSubscription } from "@/lib/subscription"
 
-export const SettingsPage = async()=>{
+export default async function SettingsPage(){
 
     const isPro = await checkSubscription();
 
@@ -18,4 +18,3 @@ export const SettingsPage = async()=>{
         </>
     )
 }
-export default SettingsPage;
