@@ -190,8 +190,8 @@ export const ChatMessage = ({
         const filteredVoices = voices.filter((voice) => {
           const matchLang = isHindi ? voice.lang.includes("hi") : voice.lang.includes("en");
           const matchGender = gender === "male"
-            ? voice.name.toLowerCase().includes("male") || voice.name.toLowerCase().includes("ravi") || voice.name.toLowerCase().includes("vikas") || voice.name.toLowerCase().includes("kartik") || voice.name.toLowerCase().includes("hassan") || voice.name.toLowerCase().includes("mark")
-            : voice.name.toLowerCase().includes("female") || voice.name.toLowerCase().includes("zira") || voice.name.toLowerCase().includes("heera");
+            ? voice.name.toLowerCase().includes("male") || voice.name.toLowerCase().includes("Microsoft Mark") || voice.name.toLowerCase().includes("Microsoft Ravi") || voice.name.toLowerCase().includes("Microsoft David") || voice.name.toLowerCase().includes("Google UK English Male") || voice.name.toLowerCase().includes("mark")
+            : voice.name.toLowerCase().includes("female") || voice.name.toLowerCase().includes("Microsoft Zira") || voice.name.toLowerCase().includes("Microsoft Heera");
           return matchLang && matchGender;
         });
     
