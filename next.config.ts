@@ -6,7 +6,8 @@ const nextConfig: NextConfig = {
     domains:[
       "res.cloudinary.com"
     ]
-  }
+  },
+  
 };
 
 export default nextConfig;
