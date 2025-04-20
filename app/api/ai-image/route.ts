@@ -24,7 +24,10 @@ export async function POST(req: Request) {
     const image = await hf.textToImage({
       model: "stabilityai/stable-diffusion-3.5-large",
       inputs: prompt,
-      parameters: { num_inference_steps: 50, seed: Math.floor(Math.random() * 100000) },
+      parameters: {
+        num_inference_steps: 50,
+        seed: Math.floor(Math.random() * 100000),
+      } as any,
     });
     if (!image) {
       console.error("No image received from Hugging Face");
