@@ -72,10 +72,11 @@ export async function PATCH(request: NextRequest)
 export async function DELETE(
     request: NextRequest)
 {
-    const url=new URL(request.url);
-    const pathSegments=url.pathname.split("/");
-    const companionId=pathSegments[pathSegments.length-1];
+    
     try{
+        const url=new URL(request.url);
+        const pathSegments=url.pathname.split("/");
+        const companionId=pathSegments[pathSegments.length-1];
         const { userId } = await auth();
 
         if(!userId){
